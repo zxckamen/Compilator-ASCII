@@ -256,7 +256,6 @@
     </style>
 </head>
 <body>
-    <!-- Canvas для падающих символов -->
     <canvas id="bgCanvas"></canvas>
 
     <div class="container">
@@ -313,31 +312,23 @@
     </div>
 
     <script>
-        /* ==========================================
-           ЛОГИКА ФОНА: ПАДАЮЩИЕ СИМВОЛЫ (CANVAS)
-           ========================================== */
         const canvas = document.getElementById('bgCanvas');
         const ctx = canvas.getContext('2d');
 
         let width = canvas.width = window.innerWidth;
         let height = canvas.height = window.innerHeight;
 
-        // Только разрешённые символы
         const chars = "@%#*+=-:. ".split("");
         
-        // Размер шрифта для "больших вертикальных строчек"
         const fontSize = 32; 
         const columns = Math.floor(width / fontSize);
         
-        // Массив для отслеживания Y-координаты каждой колонки
-        // Инициализируем отрицательными значениями, чтобы дождь начинался не одновременно
         const drops = [];
         for (let i = 0; i < columns; i++) {
             drops[i] = Math.random() * -50; 
         }
 
         function drawRain() {
-            // Полупрозрачный фон для создания эффекта мягкого шлейфа
             ctx.fillStyle = 'rgba(26, 15, 20, 0.15)';
             ctx.fillRect(0, 0, width, height);
 
@@ -345,50 +336,37 @@
             ctx.textAlign = "center";
 
             for (let i = 0; i < drops.length; i++) {
-                // Случайный символ из разрешённого набора
                 const text = chars[Math.floor(Math.random() * chars.length)];
                 
-                // Полупрозрачный розовый цвет с эффектом свечения
                 ctx.fillStyle = 'rgba(255, 107, 157, 0.25)';
                 ctx.shadowBlur = 15;
                 ctx.shadowColor = 'rgba(255, 107, 157, 0.5)';
                 
-                // Рисуем символ
                 const x = i * fontSize + fontSize / 2;
                 const y = drops[i] * fontSize;
                 ctx.fillText(text, x, y);
 
-                // Сброс капли наверх со случайной задержкой после выхода за экран
                 if (y > height && Math.random() > 0.975) {
                     drops[i] = 0;
                 }
                 
-                // Двигаем каплю вниз
                 drops[i]++;
             }
         }
 
-        // Запускаем анимацию (~30 FPS для плавного, но заметного движения)
         setInterval(drawRain, 50);
 
-        // Адаптация при изменении размера окна
         window.addEventListener('resize', () => {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
             
             const newColumns = Math.floor(width / fontSize);
-            // Сохраняем старые капли, добавляем новые при необходимости
             for (let i = drops.length; i < newColumns; i++) {
                 drops[i] = Math.random() * -50;
             }
-            // Обрезаем массив, если окно сузилось
             drops.length = newColumns;
         });
 
-
-        /* ==========================================
-           ЛОГИКА ASCII ГЕНЕРАТОРА
-           ========================================== */
         const charsets = {
             detailed: '@%#*+=-:. ',
             simple: '#@%*+=-:. ',

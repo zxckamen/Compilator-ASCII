@@ -1,7 +1,3 @@
-"""
-Выбор изображения через системный диалог + ASCII в консоль
-Установка: pip install Pillow
-"""
 
 import os
 import tkinter as tk
@@ -10,7 +6,6 @@ from PIL import Image
 
 
 def pick_image():
-    """Открывает системный диалог выбора файла"""
     root = tk.Tk()
     root.withdraw() 
     root.attributes('-topmost', True)
